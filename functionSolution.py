@@ -1,31 +1,21 @@
-def calculate_balance(transaction_amounts, transaction_dates):    
-    # Initial balance and transaction fee setup
+def solution(A, D):
     balance = 0
-    transaction_fee = 5
-    
-    # Keep track of transactions by month using a dictionary
-    monthly_transactions = {}
-    
-    # Process each transaction
-    for amount, date in zip(transaction_amounts, transaction_dates):
-        # Extract the month from the date
-        month = int(date.split('-')[1])
-        
-        # Update balance based on transaction amount (positive or negative)
+    monthly_card_payments = {i: 0 for i in range(1, 13)}
+
+    for i in range(len(A)):
+        amount = A[i]
+        date_month = int(D[i][5:7])
+
         balance += amount
-        
-        # Track negative transactions by month
+
         if amount < 0:
-            monthly_transactions.setdefault(month, []).append(amount)
-    
-    # Process each month for additional fees
-    for month in range(1, 13):
-        # Check if conditions for fees are met
-        if month in monthly_transactions and len(monthly_transactions[month]) >= 3 and sum(monthly_transactions[month]) >= -100:
-            # Apply fees for transactions beyond the first 3
-            balance += transaction_fee * (len(monthly_transactions[month]) - 3)
+            monthly_card_payments[date_month] += 1
         else:
-            # Apply standard monthly fee
-            balance -= transaction_fee
-    
+            monthly_card_payments[date_month] -= 1
+
+        if amount < 0 and monthly_card_payments[date_month] >= 3 and abs(monthly_card_payments[date_month]) >= 100:
+            balance += 5
+
+    balance -= 5 * 12
+
     return balance
